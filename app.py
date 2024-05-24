@@ -21,7 +21,7 @@ models = ["meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
           "CohereForAI/aya-23-8B",                   # AYA
           "google/gemma-1.1-2b-it",                  # GEMMA
           "gpt-4o",                                  # GPT4o
-          "TWO/sutra-alpha"]                         # SUTRA
+          "TWO/sutra-mlt256-v2"]                     # SUTRA
 
 test_phrase_set = [
     "நாங்கள் சந்திரனுக்கு ராக்கெட் பயணத்தில் இருக்கிறோம்",
