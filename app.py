@@ -1,29 +1,27 @@
 import logging
-import time
+
+import tiktoken
+from transformers import AutoTokenizer
 
 import gradio as gr
-from transformers import AutoTokenizer
-import tiktoken
 
 logger = logging.getLogger(__name__)  # noqa
 
+
 def load_test_phrases(filename):
     with open(f"./data/{filename}", "r", encoding="utf-8") as file:
-        texts = file.read().splitlines()
-    return texts
+        return file.read().splitlines()
 
-# Initialize clients
-models = [
-          "meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
+
+models = ["meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
           "beomi/llama-2-ko-7b",                     # LLAMA-2-ko
           "openaccess-ai-collective/tiny-mistral",   # Mistral
           "gpt-3.5-turbo",                           # GPT3.5
           "meta-llama/Meta-Llama-3-8B-Instruct",     # LLAMA-3
           "CohereForAI/aya-23-8B",                   # AYA
-          "google/gemma-1.1-2b-it",                  # GEMMA       //# requires log in to HF huggingface-cli
+          "google/gemma-1.1-2b-it",                  # GEMMA
           "gpt-4o",                                  # GPT4o
-          "TWO/sutra-alpha",                         # SUTRA
-         ]
+          "TWO/sutra-alpha"]                         # SUTRA
 
 test_phrase_set = [
     "நாங்கள் சந்திரனுக்கு ராக்கெட் பயணத்தில் இருக்கிறோம்",
@@ -50,6 +48,7 @@ test_phrase_set = [
 test_phrase_set_long_1 = load_test_phrases('multilingualphrases01.txt')
 test_phrase_set_long_2 = load_test_phrases('multilingualphrases02.txt')
 
+
 def generate_tokens_as_table(text):
     table = []
     for model in models:
@@ -63,7 +62,11 @@ def generate_tokens_as_table(text):
         table.append([model] + decoded)
     return table
 
-def generate_tokenizer_table(input_text):
+
+def generate_tokenizer_table(text):
+    if not text:
+        return []
+
     token_counts = {model: 0 for model in models}
     vocab_size = {model: 0 for model in models}
 
@@ -75,35 +78,38 @@ def generate_tokenizer_table(input_text):
             tokenizer = tiktoken.encoding_for_model(model)
             vocab_size[model] = tokenizer.n_vocab
 
-        token_counts[model] += len(tokenizer.encode(input_text))
+        token_counts[model] += len(tokenizer.encode(text))
 
-    word_count = len(input_text.split(' '))
+    word_count = len(text.split(' '))
 
     output = []
     for m in models:
-        row = [m, vocab_size[m], word_count, token_counts[m], token_counts[m]/word_count]
+        row = [m, vocab_size[m], word_count, token_counts[m], token_counts[m] / word_count]
         output.append(row)
 
     return output
 
-def generate_split_token_table(text):
-    table = generate_tokenizer_table(text)
-    records = gr.Dataframe(
-            table,
-            headers=['tokenizer', 'v size', '#word', '#token', '#tokens/word'],
-            datatype=["str", "number", "str"],
-            row_count=len(models),
-            col_count=(5, "fixed"),
-        )
 
-    return records
+def generate_split_token_table(text):
+    if not text:
+        return gr.Dataframe()
+
+    table = generate_tokenizer_table(text)
+    return gr.Dataframe(
+        table,
+        headers=['tokenizer', 'v size', '#word', '#token', '#tokens/word'],
+        datatype=["str", "number", "str"],
+        row_count=len(models),
+        col_count=(5, "fixed"),
+    )
+
 
 with gr.Blocks() as sutra_token_count:
     gr.Markdown(
-    """
-    # SUTRA Multilingual Tokenizer Specs & Stats.
-    ## Tokenize paragraphs in multiple languages and inspect how many tokens it takes to represent the multilingual paragraph.
-    """)
+        """
+        # SUTRA Multilingual Tokenizer Specs & Stats.
+        ## Tokenize paragraphs in multiple languages and compare token counts.
+        """)
     textbox = gr.Textbox(label="Input Text")
     submit_button = gr.Button("Submit")
     output = gr.Dataframe()
@@ -114,24 +120,24 @@ with gr.Blocks() as sutra_token_count:
     gr.Examples(examples=examples, inputs=[textbox])
     submit_button.click(generate_split_token_table, inputs=[textbox], outputs=[output])
 
+
 def generate_tokens_table(text):
     table = generate_tokens_as_table(text)
     cols = len(table[0])
-    records = gr.Dataframe(
-            table,
-            headers=['model'] + [str(i) for i in range(cols - 1)],
-            row_count=2,
-            col_count=(cols, "fixed"),
-        )
+    return gr.Dataframe(
+        table,
+        headers=['model'] + [str(i) for i in range(cols - 1)],
+        row_count=2,
+        col_count=(cols, "fixed"),
+    )
 
-    return records
 
 with gr.Blocks() as sutra_tokenize:
     gr.Markdown(
-    """
-    # SUTRA Multilingual Tokenizer Sentence Inspector.
-    ## Tokenize a sentence with various tokenizers and inspect how it's broken down.
-    """)
+        """
+        # SUTRA Multilingual Tokenizer Sentence Inspector.
+        ## Tokenize a sentence with various tokenizers and inspect how it's broken down.
+        """)
     textbox = gr.Textbox(label="Input Text")
     submit_button = gr.Button("Submit")
     output = gr.Dataframe()
