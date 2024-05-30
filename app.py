@@ -25,6 +25,7 @@ models = ["meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
           "TWO/sutra-mlt256-v2"]                     # SUTRA
 
 test_phrase_set = [
+    "I am going for a walk later today",
     "நாங்கள் சந்திரனுக்கு ராக்கெட் பயணத்தில் இருக்கிறோம்",
 
     "중성자 산란을 다섯 문장으로 설명해주세요",  # Korean,
@@ -48,6 +49,7 @@ test_phrase_set = [
 
 test_phrase_set_long_1 = load_test_phrases('multilingualphrases01.txt')
 test_phrase_set_long_2 = load_test_phrases('multilingualphrases02.txt')
+test_phrase_set_long_3 = load_test_phrases('multilingualphrases03.txt')
 
 
 def generate_tokens_as_table(text):
@@ -85,7 +87,7 @@ def generate_tokenizer_table(text):
 
     output = []
     for m in models:
-        row = [m, vocab_size[m], word_count, token_counts[m], token_counts[m] / word_count]
+        row = [m, vocab_size[m], word_count, token_counts[m], f"{token_counts[m] / word_count:0.2f}"]
         output.append(row)
 
     return output
@@ -117,6 +119,7 @@ with gr.Blocks() as sutra_token_count:
     examples = [
         [' '.join(test_phrase_set_long_1)],
         [' '.join(test_phrase_set_long_2)],
+        [' '.join(test_phrase_set_long_3)],
     ]
     gr.Examples(examples=examples, inputs=[textbox])
     submit_button.click(generate_split_token_table, inputs=[textbox], outputs=[output])
