@@ -13,7 +13,8 @@ def load_test_phrases(filename):
         return file.read().splitlines()
 
 
-models = ["meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
+models = ["Xenova/claude-tokenizer",                 # Anthropic
+          "meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
           "beomi/llama-2-ko-7b",                     # LLAMA-2-ko
           "ai4bharat/Airavata",                      # ARIVATA
           "openaccess-ai-collective/tiny-mistral",   # Mistral
