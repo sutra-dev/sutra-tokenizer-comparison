@@ -29,7 +29,7 @@ test_phrase_set = [
     "I am going for a walk later today",
     "நாங்கள் சந்திரனுக்கு ராக்கெட் பயணத்தில் இருக்கிறோம்",
 
-    "중성자 산란을 다섯 문장으로 설명해주세요",  # Korean,
+    "양자 중성자 산란이란 무엇입니까?",  # Korean,
 
     "मुझे पाँच वाक्यों में न्यूट्रॉन प्रकीर्णन की व्याख्या दीजिए",  # Hindi
     "mujhe paanch vaakyon mein nyootron prakeernan kee vyaakhya deejie",
