@@ -14,12 +14,10 @@ def load_test_phrases(filename):
 
 
 models = ["Xenova/claude-tokenizer",                 # Anthropic
-          "meta-llama/Llama-2-7b-chat-hf",           # LLAMA-2
-          "beomi/llama-2-ko-7b",                     # LLAMA-2-ko
           "ai4bharat/Airavata",                      # ARIVATA
           "openaccess-ai-collective/tiny-mistral",   # Mistral
           "gpt-3.5-turbo",                           # GPT3.5
-          "meta-llama/Meta-Llama-3-8B-Instruct",     # LLAMA-3
+          "meta-llama/Llama-3.1-8B-Instruct",        # LLAMA-3
           "CohereForAI/aya-23-8B",                   # AYA
           "google/gemma-1.1-2b-it",                  # GEMMA
           "gpt-4o",                                  # GPT4o
